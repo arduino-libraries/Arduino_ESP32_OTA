@@ -1,0 +1,36 @@
+#######################################
+# Syntax Coloring Map For Arduino_ESP_OTA
+#######################################
+
+#######################################
+# Class (KEYWORD1)
+#######################################
+
+Arduino_ESP_OTA	KEYWORD1
+Error	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin	KEYWORD2
+update	KEYWORD2
+reset	KEYWORD2
+download	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+None	LITERAL1
+NoOtaStorage	LITERAL1
+OtaStorageInit	LITERAL1
+OtaStorageEnd	LITERAL1
+UrlParseError	LITERAL1
+ServerConnectError	LITERAL1
+HttpHeaderError	LITERAL1
+ParseHttpHeader	LITERAL1
+OtaHeaderLength	LITERAL1
+OtaHeaderCrc	LITERAL1
+OtaHeaterMagicNumber	LITERAL1
+OtaDownload	LITERAL1
