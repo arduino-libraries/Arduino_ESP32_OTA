@@ -47,7 +47,6 @@ void setup()
   Serial.begin(9600);
   while (!Serial) {}
 
-  int status = WL_IDLE_STATUS;
   while (WiFi.status() != WL_CONNECTED)
   {
     Serial.print  ("Attempting to connect to '");
