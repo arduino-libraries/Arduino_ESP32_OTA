@@ -55,8 +55,8 @@ jobs:
         uses: arduino/compile-sketches@main
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          fqbn: ${{ matrix.board.fqbn }}
           platforms: ${{ matrix.board.platforms }}
+          fqbn: ${{ matrix.board.fqbn }}
           libraries: |
             # Install the library from the local path.
             - source-path: ./
