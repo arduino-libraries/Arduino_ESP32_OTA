@@ -112,7 +112,6 @@ int Arduino_ESP32_OTA::download(const char * ota_url)
 {
   URI url(ota_url);
   int port = 0;
-  int err = -1;
 
   if (url.protocol_ == "http") {
     _client = new WiFiClient();
