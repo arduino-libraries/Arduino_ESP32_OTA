@@ -55,12 +55,12 @@ jobs:
         uses: arduino/compile-sketches@main
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          platforms: ${{ matrix.board.platforms }}
+          platforms: ${{ matrix.platforms }}
           fqbn: ${{ matrix.board.fqbn }}
           libraries: |
             # Install the library from the local path.
             - source-path: ./
-            ${{ matrix.board.libraries }}
+            ${{ matrix.libraries }}
           sketch-paths: |
             - examples
           enable-deltas-report: true
