@@ -74,4 +74,5 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.SKETCHES_REPORTS_PATH }}
+          if-no-files-found: error
           path: ${{ env.SKETCHES_REPORTS_PATH }}
