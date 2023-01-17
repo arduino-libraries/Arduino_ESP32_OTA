@@ -1,8 +1,49 @@
-Arduino_ESP_OTA
+`Arduino_ESP_OTA`
 ====================
+
+*Note: This library is currently in [beta](#board-support).*
 
 [![Compile Examples](https://github.com/bcmi-labs/Arduino_ESP_OTA/workflows/Compile%20Examples/badge.svg)](https://github.com/bcmi-labs/Arduino_ESP_OTA/actions?workflow=Compile+Examples)
 [![Arduino Lint](https://github.com/bcmi-labs/Arduino_ESP_OTA/workflows/Arduino%20Lint/badge.svg)](https://github.com/bcmi-labs/Arduino_ESP_OTA/actions?workflow=Arduino+Lint)
 [![Spell Check](https://github.com/bcmi-labs/Arduino_ESP_OTA/workflows/Spell%20Check/badge.svg)](https://github.com/bcmi-labs/Arduino_ESP_OTA/actions?workflow=Spell+Check)
 
-This library allows OTA (Over-The-Air) firmware updates for ESP boards. OTA binaries are downloaded via WiFi and stored in the OTA flash partition. After a reset the ESP bootloader performs the firmware update.
+This library allows OTA (Over-The-Air) firmware updates for ESP32 boards. OTA binaries are downloaded via WiFi and stored in the OTA flash partition. After a reset the ESP32 bootloader update the reference to the new firmware.
+
+## Requirements
+
+* Flash size > 2MB
+* OTA_1 partition available within selected partition scheme
+
+    | Partition scheme | OTA support |
+    | --- | --- |
+    | `app3M_fat9M_16MB` | :heavy_check_mark: |
+    | `default_16MB` | :heavy_check_mark: |
+    | `large_spiffs_16MB` | :heavy_check_mark: |
+    | `ffat` | :heavy_check_mark: |
+    | `default_8MB` | :heavy_check_mark: |
+    | `max_app_8MB` | :x: |
+    | `min_spiffs` | :heavy_check_mark: |
+    | `default` / `default_ffat` | :heavy_check_mark: |
+    | `huge_app` | :x: |
+    | `no_ota` | :x: |
+    | `noota_3g` / `noota_3gffat` / `noota_ffat` | :x: |
+    | `rainmaker` | :heavy_check_mark: |
+    | `minimal` | :x: |
+    | `bare_minimum_2MB` | :x: |
+
+
+## Board support
+
+* The library has been tested on the following boards:
+
+    | Module | Board |
+    | --- | --- |
+    | `ESP32-WROOM` | [ESP32-DevKitC V4](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/hw-reference/esp32/get-started-devkitc.html#) |
+    | `ESP32-WROVER` | [Freenove_ESP32_WROVER](https://github.com/Freenove/Freenove_ESP32_WROVER_Board) |
+    |  | DOIT ESP32 DEVKIT V1 |
+    |  | Wemos Lolin D32 |
+    |  | NodeMCU-32S |
+    | `ESP32-­S3-­WROOM`­ | [ESP32-S3-DevKitC-1 v1.1](https://docs.espressif.com/projects/esp-idf/en/latest/esp32s3/hw-reference/esp32s3/user-guide-devkitc-1.html) |
+    | `ESP32-­S2-­SOLO` | [ESP32-S2-DevKitC-1](https://docs.espressif.com/projects/esp-idf/en/latest/esp32s2/hw-reference/esp32s2/user-guide-s2-devkitc-1.html) |
+    |  | NodeMCU-32-S2 |
+    | `ESP32-C3`  | [LILYGO mini D1 PLUS](https://github.com/Xinyuan-LilyGO/LilyGo-T-OI-PLUS)|
