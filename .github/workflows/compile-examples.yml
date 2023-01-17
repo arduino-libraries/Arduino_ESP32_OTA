@@ -4,11 +4,13 @@ on:
   pull_request:
     paths:
       - ".github/workflows/compile-examples.yml"
+      - "library.properties"
       - "examples/**"
       - "src/**"
   push:
     paths:
       - ".github/workflows/compile-examples.yml"
+      - "library.properties"
       - "examples/**"
       - "src/**"
   # Scheduled trigger checks for breakage caused by changes to external resources (libraries, platforms)
@@ -22,6 +24,7 @@ on:
 
 jobs:
   build:
+    name: ${{ matrix.board.fqbn }}
     runs-on: ubuntu-latest
 
     env:
@@ -53,7 +56,7 @@ jobs:
         run: pip3 install pyserial
 
       - name: Compile examples
-        uses: arduino/compile-sketches@main
+        uses: arduino/compile-sketches@v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           platforms: ${{ matrix.platforms }}
@@ -71,4 +74,5 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.SKETCHES_REPORTS_PATH }}
+          if-no-files-found: error
           path: ${{ env.SKETCHES_REPORTS_PATH }}
