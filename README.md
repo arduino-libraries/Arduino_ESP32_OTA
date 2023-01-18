@@ -43,7 +43,7 @@ This library allows OTA (Over-The-Air) firmware updates for ESP32 boards. OTA bi
     |  | DOIT ESP32 DEVKIT V1 |
     |  | Wemos Lolin D32 |
     |  | NodeMCU-32S |
-    | `ESP32-­S3-­WROOM`­ | [ESP32-S3-DevKitC-1 v1.1](https://docs.espressif.com/projects/esp-idf/en/latest/esp32s3/hw-reference/esp32s3/user-guide-devkitc-1.html) |
+    | `ESP32-­S3-­WROOM`| [ESP32-S3-DevKitC-1 v1.1](https://docs.espressif.com/projects/esp-idf/en/latest/esp32s3/hw-reference/esp32s3/user-guide-devkitc-1.html) |
     | `ESP32-­S2-­SOLO` | [ESP32-S2-DevKitC-1](https://docs.espressif.com/projects/esp-idf/en/latest/esp32s2/hw-reference/esp32s2/user-guide-s2-devkitc-1.html) |
     |  | NodeMCU-32-S2 |
     | `ESP32-C3`  | [LILYGO mini D1 PLUS](https://github.com/Xinyuan-LilyGO/LilyGo-T-OI-PLUS)|
