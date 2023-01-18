@@ -3,9 +3,9 @@
 
 *Note: This library is currently in [beta](#running-tests).*
 
-[![Compile Examples](https://github.com/bcmi-labs/Arduino_ESP32_OTA/workflows/Compile%20Examples/badge.svg)](https://github.com/bcmi-labs/Arduino_ESP32_OTA/actions?workflow=Compile+Examples)
-[![Arduino Lint](https://github.com/bcmi-labs/Arduino_ESP32_OTA/workflows/Arduino%20Lint/badge.svg)](https://github.com/bcmi-labs/Arduino_ESP32_OTA/actions?workflow=Arduino+Lint)
-[![Spell Check](https://github.com/bcmi-labs/Arduino_ESP32_OTA/workflows/Spell%20Check/badge.svg)](https://github.com/bcmi-labs/Arduino_ESP32_OTA/actions?workflow=Spell+Check)
+[![Compile Examples](https://github.com/arduino-libraries/Arduino_ESP32_OTA/workflows/Compile%20Examples/badge.svg)](https://github.com/arduino-libraries/Arduino_ESP32_OTA/actions?workflow=Compile+Examples)
+[![Arduino Lint](https://github.com/arduino-libraries/Arduino_ESP32_OTA/workflows/Arduino%20Lint/badge.svg)](https://github.com/arduino-libraries/Arduino_ESP32_OTA/actions?workflow=Arduino+Lint)
+[![Spell Check](https://github.com/arduino-libraries/Arduino_ESP32_OTA/workflows/Spell%20Check/badge.svg)](https://github.com/arduino-libraries/Arduino_ESP32_OTA/actions?workflow=Spell+Check)
 
 This library allows OTA (Over-The-Air) firmware updates for ESP32 boards. OTA binaries are downloaded via WiFi and stored in the OTA flash partition. After integrity checks the reference to the new firmware is configured in the bootloader; finally board resets to boot new firmware.
 
