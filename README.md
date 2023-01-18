@@ -1,7 +1,7 @@
 `Arduino_ESP32_OTA`
 ====================
 
-*Note: This library is currently in [beta](#tests).*
+*Note: This library is currently in [beta](#running-tests).*
 
 [![Compile Examples](https://github.com/bcmi-labs/Arduino_ESP32_OTA/workflows/Compile%20Examples/badge.svg)](https://github.com/bcmi-labs/Arduino_ESP32_OTA/actions?workflow=Compile+Examples)
 [![Arduino Lint](https://github.com/bcmi-labs/Arduino_ESP32_OTA/workflows/Arduino%20Lint/badge.svg)](https://github.com/bcmi-labs/Arduino_ESP32_OTA/actions?workflow=Arduino+Lint)
