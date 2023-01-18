@@ -1,5 +1,5 @@
-#ifndef ESP_OTA_UTILITY_H_
-#define ESP_OTA_UTILITY_H_
+#ifndef ESP32_OTA_UTILITY_H_
+#define ESP32_OTA_UTILITY_H_
 
 /**************************************************************************************
    INCLUDE
@@ -53,4 +53,4 @@ union OtaHeader
 
 uint32_t crc_update(uint32_t crc, const void * data, size_t data_len);
 
-#endif /* ESP_OTA_UTILITY_H_ */
+#endif /* ESP32_OTA_UTILITY_H_ */
