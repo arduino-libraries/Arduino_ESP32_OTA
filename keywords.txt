@@ -1,12 +1,12 @@
 #######################################
-# Syntax Coloring Map For Arduino_ESP_OTA
+# Syntax Coloring Map For Arduino_ESP32_OTA
 #######################################
 
 #######################################
 # Class (KEYWORD1)
 #######################################
 
-Arduino_ESP_OTA	KEYWORD1
+Arduino_ESP32_OTA	KEYWORD1
 Error	KEYWORD1
 
 #######################################

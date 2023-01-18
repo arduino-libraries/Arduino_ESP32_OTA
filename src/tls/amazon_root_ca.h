@@ -1,7 +1,7 @@
 /* Certificates from https://www.amazontrust.com/repository/ */
 
-#ifndef ESP_OTA_AMAZON_ROOT_CA_H_
-#define ESP_OTA_AMAZON_ROOT_CA_H_
+#ifndef ESP32_OTA_AMAZON_ROOT_CA_H_
+#define ESP32_OTA_AMAZON_ROOT_CA_H_
 
 const char* amazon_root_ca = \
 /* Amazon Root CA 1 */
@@ -73,4 +73,4 @@ const char* amazon_root_ca = \
 "AE47xDqUEpHJWEadIRNyp4iciuRMStuW1KyLa2tJElMzrdfkviT8tQp21KW8EA==\n" \
 "-----END CERTIFICATE-----\n";
 
-#endif /* ESP_OTA_AMAZON_ROOT_CA_H_ */
+#endif /* ESP32_OTA_AMAZON_ROOT_CA_H_ */
