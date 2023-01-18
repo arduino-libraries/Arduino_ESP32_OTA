@@ -23,8 +23,8 @@
  **************************************************************************************/
 
 static size_t LZSS_FILE_SIZE = 0;
-static ArduinoEspOtaReadByteFuncPointer read_byte_fptr = 0;
-static ArduinoEspOtaWriteByteFuncPointer write_byte_fptr = 0;
+static ArduinoEsp32OtaReadByteFuncPointer read_byte_fptr = 0;
+static ArduinoEsp32OtaWriteByteFuncPointer write_byte_fptr = 0;
 
 int bit_buffer = 0, bit_mask = 128;
 unsigned char buffer[N * 2];
@@ -158,7 +158,7 @@ void lzss_decode(void)
    PUBLIC FUNCTIONS
  **************************************************************************************/
 
-int lzss_download(ArduinoEspOtaReadByteFuncPointer read_byte, ArduinoEspOtaWriteByteFuncPointer write_byte, size_t const lzss_file_size)
+int lzss_download(ArduinoEsp32OtaReadByteFuncPointer read_byte, ArduinoEsp32OtaWriteByteFuncPointer write_byte, size_t const lzss_file_size)
 {
   read_byte_fptr = read_byte;
   write_byte_fptr = write_byte;

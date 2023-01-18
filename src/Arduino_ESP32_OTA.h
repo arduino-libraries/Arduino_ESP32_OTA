@@ -1,5 +1,5 @@
 /*
-   This file is part of Arduino_ESP_OTA.
+   This file is part of Arduino_ESP32_OTA.
 
    Copyright 2020 ARDUINO SA (http://www.arduino.cc/)
 
@@ -30,15 +30,15 @@
    CONSTANTS
  ******************************************************************************/
 
-static uint32_t const ARDUINO_ESP_OTA_HTTP_HEADER_RECEIVE_TIMEOUT_ms = 10000;
-static uint32_t const ARDUINO_ESP_OTA_BINARY_BYTE_RECEIVE_TIMEOUT_ms = 2000;
+static uint32_t const ARDUINO_ESP32_OTA_HTTP_HEADER_RECEIVE_TIMEOUT_ms = 10000;
+static uint32_t const ARDUINO_ESP32_OTA_BINARY_BYTE_RECEIVE_TIMEOUT_ms = 2000;
 
 /******************************************************************************
  * TYPEDEF
  ******************************************************************************/
 
-typedef uint8_t(*ArduinoEspOtaReadByteFuncPointer)(void);
-typedef void(*ArduinoEspOtaWriteByteFuncPointer)(uint8_t);
+typedef uint8_t(*ArduinoEsp32OtaReadByteFuncPointer)(void);
+typedef void(*ArduinoEsp32OtaWriteByteFuncPointer)(uint8_t);
 
 /******************************************************************************
  * CLASS DECLARATION

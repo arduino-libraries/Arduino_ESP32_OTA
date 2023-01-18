@@ -1,5 +1,5 @@
 /*
-   This file is part of Arduino_ESP_OTA.
+   This file is part of Arduino_ESP32_OTA.
 
    Copyright 2022 ARDUINO SA (http://www.arduino.cc/)
 
@@ -90,7 +90,7 @@ uint8_t Arduino_ESP32_OTA::read_byte_from_network()
   bool is_http_data_timeout = false;
   for(unsigned long const start = millis();;)
   {
-    is_http_data_timeout = (millis() - start) > ARDUINO_ESP_OTA_BINARY_BYTE_RECEIVE_TIMEOUT_ms;
+    is_http_data_timeout = (millis() - start) > ARDUINO_ESP32_OTA_BINARY_BYTE_RECEIVE_TIMEOUT_ms;
     if (is_http_data_timeout) {
       DEBUG_ERROR("%s: timeout waiting data", __FUNCTION__);
       return -1;
@@ -142,7 +142,7 @@ int Arduino_ESP32_OTA::download(const char * ota_url)
        is_http_header_timeout = false;
   for (unsigned long const start = millis(); !is_header_complete;)
   {
-    is_http_header_timeout = (millis() - start) > ARDUINO_ESP_OTA_HTTP_HEADER_RECEIVE_TIMEOUT_ms;
+    is_http_header_timeout = (millis() - start) > ARDUINO_ESP32_OTA_HTTP_HEADER_RECEIVE_TIMEOUT_ms;
     if (is_http_header_timeout) break;
 
     if (_client->available())
