@@ -11,6 +11,11 @@ This library allows OTA (Over-The-Air) firmware updates for ESP32 boards. OTA bi
 
 The library is based on the [Update](https://github.com/espressif/arduino-esp32/tree/master/libraries/Update) library of the [arduino-esp32](https://github.com/espressif/arduino-esp32) core.
 
+## :mag: How?
+
+* Create a minimal [example](examples/OTA/OTA.ino)
+* Create a [compressed](https://github.com/arduino-libraries/ArduinoIoTCloud/blob/master/extras/tools/lzss.py) [ota](https://github.com/arduino-libraries/ArduinoIoTCloud/blob/master/extras/tools/bin2ota.py) file
+
 ## Requirements
 
 * Flash size > 2MB
