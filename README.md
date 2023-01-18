@@ -9,6 +9,8 @@
 
 This library allows OTA (Over-The-Air) firmware updates for ESP32 boards. OTA binaries are downloaded via WiFi and stored in the OTA flash partition. After integrity checks the reference to the new firmware is configured in the bootloader and board is resetted to boot new firmware.
 
+The library is based on the [Update](https://github.com/espressif/arduino-esp32/tree/master/libraries/Update) library of the [arduino-esp32](https://github.com/espressif/arduino-esp32) core.
+
 ## Requirements
 
 * Flash size > 2MB
