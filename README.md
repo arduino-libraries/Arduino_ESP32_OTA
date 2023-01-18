@@ -1,15 +1,22 @@
 `Arduino_ESP32_OTA`
 ====================
 
-*Note: This library is currently in [beta](#board-support).*
+*Note: This library is currently in [beta](#tests).*
 
 [![Compile Examples](https://github.com/bcmi-labs/Arduino_ESP32_OTA/workflows/Compile%20Examples/badge.svg)](https://github.com/bcmi-labs/Arduino_ESP32_OTA/actions?workflow=Compile+Examples)
 [![Arduino Lint](https://github.com/bcmi-labs/Arduino_ESP32_OTA/workflows/Arduino%20Lint/badge.svg)](https://github.com/bcmi-labs/Arduino_ESP32_OTA/actions?workflow=Arduino+Lint)
 [![Spell Check](https://github.com/bcmi-labs/Arduino_ESP32_OTA/workflows/Spell%20Check/badge.svg)](https://github.com/bcmi-labs/Arduino_ESP32_OTA/actions?workflow=Spell+Check)
 
-This library allows OTA (Over-The-Air) firmware updates for ESP32 boards. OTA binaries are downloaded via WiFi and stored in the OTA flash partition. After a reset the ESP32 bootloader update the reference to the new firmware.
+This library allows OTA (Over-The-Air) firmware updates for ESP32 boards. OTA binaries are downloaded via WiFi and stored in the OTA flash partition. After integrity checks the reference to the new firmware is configured in the bootloader and board is resetted to boot new firmware.
 
-## Requirements
+The library is based on the [Update](https://github.com/espressif/arduino-esp32/tree/master/libraries/Update) library of the [arduino-esp32](https://github.com/espressif/arduino-esp32) core.
+
+## :mag: How?
+
+* Create a minimal [example](examples/OTA/OTA.ino)
+* Create a [compressed](https://github.com/arduino-libraries/ArduinoIoTCloud/blob/master/extras/tools/lzss.py) [ota](https://github.com/arduino-libraries/ArduinoIoTCloud/blob/master/extras/tools/bin2ota.py) file
+
+## :key: Requirements
 
 * Flash size > 2MB
 * OTA_1 partition available within selected partition scheme
@@ -32,7 +39,7 @@ This library allows OTA (Over-The-Air) firmware updates for ESP32 boards. OTA bi
     | `bare_minimum_2MB` | :x: |
 
 
-## Board support
+## :running: Tests
 
 * The library has been tested on the following boards:
 
@@ -43,7 +50,7 @@ This library allows OTA (Over-The-Air) firmware updates for ESP32 boards. OTA bi
     |  | DOIT ESP32 DEVKIT V1 |
     |  | Wemos Lolin D32 |
     |  | NodeMCU-32S |
-    | `ESP32-­S3-­WROOM`­ | [ESP32-S3-DevKitC-1 v1.1](https://docs.espressif.com/projects/esp-idf/en/latest/esp32s3/hw-reference/esp32s3/user-guide-devkitc-1.html) |
+    | `ESP32-­S3-­WROOM`| [ESP32-S3-DevKitC-1 v1.1](https://docs.espressif.com/projects/esp-idf/en/latest/esp32s3/hw-reference/esp32s3/user-guide-devkitc-1.html) |
     | `ESP32-­S2-­SOLO` | [ESP32-S2-DevKitC-1](https://docs.espressif.com/projects/esp-idf/en/latest/esp32s2/hw-reference/esp32s2/user-guide-s2-devkitc-1.html) |
     |  | NodeMCU-32-S2 |
     | `ESP32-C3`  | [LILYGO mini D1 PLUS](https://github.com/Xinyuan-LilyGO/LilyGo-T-OI-PLUS)|
