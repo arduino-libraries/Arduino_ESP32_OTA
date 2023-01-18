@@ -1,7 +1,7 @@
 `Arduino_ESP32_OTA`
 ====================
 
-*Note: This library is currently in [beta](#board-support).*
+*Note: This library is currently in [beta](#tests).*
 
 [![Compile Examples](https://github.com/bcmi-labs/Arduino_ESP32_OTA/workflows/Compile%20Examples/badge.svg)](https://github.com/bcmi-labs/Arduino_ESP32_OTA/actions?workflow=Compile+Examples)
 [![Arduino Lint](https://github.com/bcmi-labs/Arduino_ESP32_OTA/workflows/Arduino%20Lint/badge.svg)](https://github.com/bcmi-labs/Arduino_ESP32_OTA/actions?workflow=Arduino+Lint)
@@ -16,7 +16,7 @@ The library is based on the [Update](https://github.com/espressif/arduino-esp32/
 * Create a minimal [example](examples/OTA/OTA.ino)
 * Create a [compressed](https://github.com/arduino-libraries/ArduinoIoTCloud/blob/master/extras/tools/lzss.py) [ota](https://github.com/arduino-libraries/ArduinoIoTCloud/blob/master/extras/tools/bin2ota.py) file
 
-## Requirements
+## :key: Requirements
 
 * Flash size > 2MB
 * OTA_1 partition available within selected partition scheme
@@ -39,7 +39,7 @@ The library is based on the [Update](https://github.com/espressif/arduino-esp32/
     | `bare_minimum_2MB` | :x: |
 
 
-## Board support
+## :running: Tests
 
 * The library has been tested on the following boards:
 
