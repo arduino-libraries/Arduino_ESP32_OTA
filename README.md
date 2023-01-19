@@ -18,7 +18,7 @@ The library is based on the [Update](https://github.com/espressif/arduino-esp32/
 
 ## :key: Requirements
 
-* Flash size > 2MB
+* Flash size >= 4MB
 * OTA_1 partition available within selected partition scheme
 
     | Partition scheme | OTA support |
