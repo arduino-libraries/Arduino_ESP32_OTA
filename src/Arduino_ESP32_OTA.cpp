@@ -189,7 +189,7 @@ int Arduino_ESP32_OTA::download(const char * ota_url)
     return static_cast<int>(Error::OtaHeaderLength);
   }
 
-  if (_ota_header.header.magic_number != 0x45535033)
+  if (_ota_header.header.magic_number != ARDUINO_ESP32_OTA_MAGIC)
   {
     return static_cast<int>(Error::OtaHeaterMagicNumber);
   }
