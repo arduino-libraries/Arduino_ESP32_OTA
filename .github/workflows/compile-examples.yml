@@ -48,12 +48,18 @@ jobs:
                 source-url: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
             libraries: |
               - name: Arduino_DebugUtils
+            sketch-paths: |
+              - examples/OTA
+              - examples/LOLIN_32_Blink
           - board:
               type: arduino_esp32
             platforms: |
               - name: arduino:esp32
             libraries: |
               - name: Arduino_DebugUtils
+            sketch-paths: |
+              - examples/OTA
+              - examples/NANO_ESP32_Blink
 
     steps:
       - name: Checkout
@@ -74,7 +80,7 @@ jobs:
             - source-path: ./
             ${{ matrix.libraries }}
           sketch-paths: |
-            - examples
+            ${{ matrix.sketch-paths }}
           enable-deltas-report: true
           sketches-report-path: ${{ env.SKETCHES_REPORTS_PATH }}
 
