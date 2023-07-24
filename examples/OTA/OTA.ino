@@ -36,7 +36,12 @@
 static char const SSID[] = SECRET_SSID;  /* your network SSID (name) */
 static char const PASS[] = SECRET_PASS;  /* your network password (use for WPA, or use as key for WEP) */
 
+
+#if defined(ARDUINO_NANO_ESP32)
+static char const OTA_FILE_LOCATION[] = "https://downloads.arduino.cc/ota/NANO_ESP32_Blink.ino.ota";
+#else
 static char const OTA_FILE_LOCATION[] = "https://downloads.arduino.cc/ota/LOLIN_32_Blink.ino.ota";
+#endif
 
 /******************************************************************************
  * SETUP/LOOP
@@ -95,7 +100,11 @@ void setup()
   }
 
   Serial.println("Performing a reset after which the bootloader will start the new firmware.");
+#if defined(ARDUINO_NANO_ESP32)
+  Serial.println("Hint: Arduino NANO ESP32 will blink Red Green and Blue.");
+#else
   Serial.println("Hint: LOLIN32 will blink Blue.");
+#endif
   delay(1000); /* Make sure the serial message gets out before the reset. */
   ota.reset();
 }
