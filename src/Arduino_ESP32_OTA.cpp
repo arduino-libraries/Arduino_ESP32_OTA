@@ -146,6 +146,8 @@ int Arduino_ESP32_OTA::download(const char * ota_url)
   if (!_client->connect(url.host_.c_str(), port))
   {
     DEBUG_ERROR("%s: Connection failure with OTA storage server %s", __FUNCTION__, url.host_.c_str());
+    delete _client;
+    _client = nullptr;
     return static_cast<int>(Error::ServerConnectError);
   }
 
@@ -176,6 +178,8 @@ int Arduino_ESP32_OTA::download(const char * ota_url)
   if (!is_header_complete)
   {
     DEBUG_ERROR("%s: Error receiving HTTP header %s", __FUNCTION__, is_http_header_timeout ? "(timeout)":"");
+    delete _client;
+    _client = nullptr;
     return static_cast<int>(Error::HttpHeaderError);
   }
 
@@ -206,6 +210,8 @@ int Arduino_ESP32_OTA::download(const char * ota_url)
   if (!content_length_ptr)
   {
     DEBUG_ERROR("%s: Failure to extract content length from http header", __FUNCTION__);
+    delete _client;
+    _client = nullptr;
     return static_cast<int>(Error::ParseHttpHeader);
   }
   /* Find start of numerical value. */
@@ -233,17 +239,23 @@ int Arduino_ESP32_OTA::download(const char * ota_url)
 
   /* ... check for header download timeout ... */
   if (is_ota_header_timeout) {
+    delete _client;
+    _client = nullptr;
     return static_cast<int>(Error::OtaHeaderTimeout);
   }
 
   /* ... then check if OTA header length field matches HTTP content length... */
   if (_ota_header.header.len != (content_length_val - sizeof(_ota_header.header.len) - sizeof(_ota_header.header.crc32))) {
+    delete _client;
+    _client = nullptr;
     return static_cast<int>(Error::OtaHeaderLength);
   }
 
   /* ... and OTA magic number */
   if (_ota_header.header.magic_number != ARDUINO_ESP32_OTA_MAGIC)
   {
+    delete _client;
+    _client = nullptr;
     return static_cast<int>(Error::OtaHeaterMagicNumber);
   }
 
@@ -255,9 +267,13 @@ int Arduino_ESP32_OTA::download(const char * ota_url)
 
   if(_ota_size <= content_length_val - sizeof(_ota_header))
   {
+    delete _client;
+    _client = nullptr;
     return static_cast<int>(Error::OtaDownload);
   }
 
+  delete _client;
+  _client = nullptr;
   return _ota_size;
 }
 
