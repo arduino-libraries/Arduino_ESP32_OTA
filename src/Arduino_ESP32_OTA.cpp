@@ -182,7 +182,25 @@ int Arduino_ESP32_OTA::download(const char * ota_url)
   DEBUG_VERBOSE("%s: Length of OTA binary according to HTTP header = %d bytes", __FUNCTION__, content_length_val);
 
   /* Read the OTA header ... */
-  _client->read(_ota_header.buf, sizeof(OtaHeader));
+  bool is_http_data_timeout = false;
+  for(int i = 0; i < sizeof(OtaHeader) && !is_http_data_timeout; i++)
+  {
+    for(unsigned long const start = millis();;)
+    {
+      is_http_data_timeout = (millis() - start) > ARDUINO_ESP32_OTA_BINARY_BYTE_RECEIVE_TIMEOUT_ms;
+      if (is_http_data_timeout) 
+      {
+        DEBUG_ERROR("%s: timeout waiting data", __FUNCTION__);
+        break;
+      }
+      if (_client->available()) 
+      {
+        _ota_header.buf[i] = _client->read();
+        break;
+      }
+    }
+  }
+  //_client->read(_ota_header.buf, sizeof(OtaHeader));
 
   /* ... and check first length ... */
   if (_ota_header.header.len != (content_length_val - sizeof(_ota_header.header.len) - sizeof(_ota_header.header.crc32))) {
