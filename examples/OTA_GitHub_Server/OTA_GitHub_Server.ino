@@ -40,7 +40,7 @@ static char const PASS[] = SECRET_PASS;  /* your network password (use for WPA, 
 #if defined(ARDUINO_NANO_ESP32)
 static char const OTA_FILE_LOCATION[] = "https://raw.githubusercontent.com/arduino-libraries/Arduino_ESP32_OTA/main/examples/NANO_ESP32_Blink/NANO_ESP32_Blink.ino.ota";
 #else
-static char const OTA_FILE_LOCATION[] = "https://raw.githubusercontent.com/arduino-libraries/Arduino_ESP32_OTA/main/examples/LOLIN_32_Blink/LOLIN_32_Blink.ino.ota"
+static char const OTA_FILE_LOCATION[] = "https://raw.githubusercontent.com/arduino-libraries/Arduino_ESP32_OTA/main/examples/LOLIN_32_Blink/LOLIN_32_Blink.ino.ota";
 #endif
 
 /******************************************************************************
