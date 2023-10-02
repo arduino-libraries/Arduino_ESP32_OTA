@@ -39,6 +39,7 @@
  ******************************************************************************/
 
 static uint32_t const ARDUINO_ESP32_OTA_HTTP_HEADER_RECEIVE_TIMEOUT_ms = 10000;
+static uint32_t const ARDUINO_ESP32_OTA_BINARY_HEADER_RECEIVE_TIMEOUT_ms = 10000;
 static uint32_t const ARDUINO_ESP32_OTA_BINARY_BYTE_RECEIVE_TIMEOUT_ms = 2000;
 
 /******************************************************************************
@@ -71,6 +72,7 @@ public:
     OtaHeaderCrc         = -10,
     OtaHeaterMagicNumber = -11,
     OtaDownload          = -12,
+    OtaHeaderTimeout     = -13
   };
 
            Arduino_ESP32_OTA();

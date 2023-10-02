@@ -182,13 +182,30 @@ int Arduino_ESP32_OTA::download(const char * ota_url)
   DEBUG_VERBOSE("%s: Length of OTA binary according to HTTP header = %d bytes", __FUNCTION__, content_length_val);
 
   /* Read the OTA header ... */
-  _client->read(_ota_header.buf, sizeof(OtaHeader));
+  bool is_ota_header_timeout  = false;
+  unsigned long const start = millis();
+  for (int i = 0; i < sizeof(OtaHeader);)
+  {
+    is_ota_header_timeout = (millis() - start) > ARDUINO_ESP32_OTA_BINARY_HEADER_RECEIVE_TIMEOUT_ms;
+    if (is_ota_header_timeout) break;
 
-  /* ... and check first length ... */
+    if (_client->available())
+    {
+      _ota_header.buf[i++] = _client->read();
+    }
+  }
+
+  /* ... check for header download timeout ... */
+  if (is_ota_header_timeout) {
+    return static_cast<int>(Error::OtaHeaderTimeout);
+  }
+
+  /* ... then check if OTA header length field matches HTTP content length... */
   if (_ota_header.header.len != (content_length_val - sizeof(_ota_header.header.len) - sizeof(_ota_header.header.crc32))) {
     return static_cast<int>(Error::OtaHeaderLength);
   }
 
+  /* ... and OTA magic number */
   if (_ota_header.header.magic_number != ARDUINO_ESP32_OTA_MAGIC)
   {
     return static_cast<int>(Error::OtaHeaterMagicNumber);

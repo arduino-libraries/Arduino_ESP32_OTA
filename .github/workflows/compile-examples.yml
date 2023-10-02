@@ -49,7 +49,8 @@ jobs:
             libraries: |
               - name: Arduino_DebugUtils
             sketch-paths: |
-              - examples/OTA
+              - examples/OTA_Arduino_Server
+              - examples/OTA_GitHub_Server
               - examples/LOLIN_32_Blink
           - board:
               type: arduino_esp32
@@ -58,7 +59,8 @@ jobs:
             libraries: |
               - name: Arduino_DebugUtils
             sketch-paths: |
-              - examples/OTA
+              - examples/OTA_Arduino_Server
+              - examples/OTA_GitHub_Server
               - examples/NANO_ESP32_Blink
 
     steps:
