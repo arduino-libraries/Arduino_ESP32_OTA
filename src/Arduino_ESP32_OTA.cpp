@@ -56,6 +56,7 @@ Arduino_ESP32_OTA::Arduino_ESP32_OTA()
 ,_ota_size(0)
 ,_crc32(0)
 ,_ca_cert{amazon_root_ca}
+,_ca_cert_bundle{nullptr}
 {
 
 }
@@ -82,6 +83,13 @@ void Arduino_ESP32_OTA::setCACert (const char *rootCA)
 {
   if(rootCA != nullptr) {
     _ca_cert = rootCA;
+  }
+}
+
+void Arduino_ESP32_OTA::setCACertBundle (const uint8_t * bundle)
+{
+  if(bundle != nullptr) {
+    _ca_cert_bundle = bundle;
   }
 }
 
@@ -118,7 +126,13 @@ int Arduino_ESP32_OTA::download(const char * ota_url)
     port = 80;
   } else if (url.protocol_ == "https") {
     _client = new WiFiClientSecure();
-    static_cast<WiFiClientSecure*>(_client)->setCACert(_ca_cert);
+    if (_ca_cert != nullptr) {
+      static_cast<WiFiClientSecure*>(_client)->setCACert(_ca_cert);
+    } else if (_ca_cert_bundle != nullptr) {
+      static_cast<WiFiClientSecure*>(_client)->setCACertBundle(_ca_cert_bundle);
+    } else {
+      DEBUG_VERBOSE("%s: CA not configured for download client");
+    }
     port = 443;
   } else {
     DEBUG_ERROR("%s: Failed to parse OTA URL %s", __FUNCTION__, ota_url);
