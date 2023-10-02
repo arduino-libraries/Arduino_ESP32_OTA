@@ -161,7 +161,25 @@ int Arduino_ESP32_OTA::download(const char * ota_url)
     return static_cast<int>(Error::HttpHeaderError);
   }
 
-  /* TODO check http header 200 or else*/
+  /* Check HTTP response status code */
+  char const * http_response_ptr = strstr(http_header.c_str(), "HTTP/1.1");
+  if (!http_response_ptr)
+  {
+    DEBUG_ERROR("%s: Failure to extract http response from header", __FUNCTION__);
+    return static_cast<int>(Error::ParseHttpHeader);
+  }
+  /* Find start of numerical value. */
+  char * ptr = const_cast<char *>(http_response_ptr);
+  for (ptr += strlen("HTTP/1.1"); (*ptr != '\0') && !isDigit(*ptr); ptr++) { }
+  /* Extract numerical value. */
+  String http_response_str;
+  for (; isDigit(*ptr); ptr++) http_response_str += *ptr;
+  int const http_response = atoi(http_response_str.c_str());
+
+  if (http_response != 200) {
+    DEBUG_ERROR("%s: HTTP response status code = %d", __FUNCTION__, http_response);
+    return static_cast<int>(Error::HttpResponse);
+  }
 
   /* Extract concent length from HTTP header. A typical entry looks like
    *   "Content-Length: 123456"
@@ -173,7 +191,7 @@ int Arduino_ESP32_OTA::download(const char * ota_url)
     return static_cast<int>(Error::ParseHttpHeader);
   }
   /* Find start of numerical value. */
-  char * ptr = const_cast<char *>(content_length_ptr);
+  ptr = const_cast<char *>(content_length_ptr);
   for (; (*ptr != '\0') && !isDigit(*ptr); ptr++) { }
   /* Extract numerical value. */
   String content_length_str;

@@ -72,7 +72,8 @@ public:
     OtaHeaderCrc         = -10,
     OtaHeaterMagicNumber = -11,
     OtaDownload          = -12,
-    OtaHeaderTimeout     = -13
+    OtaHeaderTimeout     = -13,
+    HttpResponse         = -14
   };
 
            Arduino_ESP32_OTA();
