@@ -71,6 +71,11 @@ Arduino_ESP32_OTA::Error Arduino_ESP32_OTA::begin()
 
   /* ... initialize CRC ... */
   _crc32 = 0xFFFFFFFF;
+
+  if(!isCapable()) {
+    DEBUG_ERROR("%s: board is not capable to perform OTA", __FUNCTION__);
+    return Error::NoOtaStorage;
+  }
   
   if(!Update.begin(UPDATE_SIZE_UNKNOWN)) {
     DEBUG_ERROR("%s: failed to initialize flash update", __FUNCTION__);
@@ -278,4 +283,11 @@ Arduino_ESP32_OTA::Error Arduino_ESP32_OTA::update()
 void Arduino_ESP32_OTA::reset()
 {
   ESP.restart();
+}
+
+bool Arduino_ESP32_OTA::isCapable()
+{
+  const esp_partition_t * ota_0  = esp_partition_find_first(ESP_PARTITION_TYPE_APP, ESP_PARTITION_SUBTYPE_APP_OTA_0, NULL);
+  const esp_partition_t * ota_1  = esp_partition_find_first(ESP_PARTITION_TYPE_APP, ESP_PARTITION_SUBTYPE_APP_OTA_1, NULL);
+  return ((ota_0 != nullptr) && (ota_1 != nullptr));
 }
