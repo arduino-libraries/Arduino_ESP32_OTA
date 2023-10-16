@@ -71,6 +71,10 @@ Arduino_ESP32_OTA::Error Arduino_ESP32_OTA::begin()
 
   /* ... initialize CRC ... */
   _crc32 = 0xFFFFFFFF;
+
+  /* initialize private variables */
+  _ota_size = 0;
+  _ota_header = {0};
   
   if(!Update.begin(UPDATE_SIZE_UNKNOWN)) {
     DEBUG_ERROR("%s: failed to initialize flash update", __FUNCTION__);
