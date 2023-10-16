@@ -195,7 +195,7 @@ int Arduino_ESP32_OTA::download(const char * ota_url)
     return static_cast<int>(Error::HttpResponse);
   }
 
-  /* Extract concent length from HTTP header. A typical entry looks like
+  /* Extract content length from HTTP header. A typical entry looks like
    *   "Content-Length: 123456"
    */
   char const * content_length_ptr = strstr(http_header.c_str(), "Content-Length");
