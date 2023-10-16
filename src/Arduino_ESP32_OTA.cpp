@@ -76,6 +76,10 @@ Arduino_ESP32_OTA::Error Arduino_ESP32_OTA::begin()
     DEBUG_ERROR("%s: board is not capable to perform OTA", __FUNCTION__);
     return Error::NoOtaStorage;
   }
+
+  /* initialize private variables */
+  _ota_size = 0;
+  _ota_header = {0};
   
   if(!Update.begin(UPDATE_SIZE_UNKNOWN)) {
     DEBUG_ERROR("%s: failed to initialize flash update", __FUNCTION__);
