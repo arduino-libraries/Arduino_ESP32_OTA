@@ -43,13 +43,6 @@ static uint32_t const ARDUINO_ESP32_OTA_BINARY_HEADER_RECEIVE_TIMEOUT_ms = 10000
 static uint32_t const ARDUINO_ESP32_OTA_BINARY_BYTE_RECEIVE_TIMEOUT_ms = 2000;
 
 /******************************************************************************
- * TYPEDEF
- ******************************************************************************/
-
-typedef uint8_t(*ArduinoEsp32OtaReadByteFuncPointer)(void);
-typedef void(*ArduinoEsp32OtaWriteByteFuncPointer)(uint8_t);
-
-/******************************************************************************
  * CLASS DECLARATION
  ******************************************************************************/
 

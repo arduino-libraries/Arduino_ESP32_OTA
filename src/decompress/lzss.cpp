@@ -22,9 +22,10 @@
    GLOBAL VARIABLES
  **************************************************************************************/
 
+/* Used to bind local module function to actual class instance */
+static Arduino_ESP32_OTA * esp_ota_obj_ptr = 0;
+
 static size_t LZSS_FILE_SIZE = 0;
-static ArduinoEsp32OtaReadByteFuncPointer read_byte_fptr = 0;
-static ArduinoEsp32OtaWriteByteFuncPointer write_byte_fptr = 0;
 
 int bit_buffer = 0, bit_mask = 128;
 unsigned char buffer[N * 2];
@@ -38,7 +39,7 @@ static size_t bytes_read_fgetc = 0;
 
 void lzss_fputc(int const c)
 {
-  write_byte_fptr((uint8_t)c);
+  esp_ota_obj_ptr->write_byte_to_flash((uint8_t)c);
   
   /* write byte callback */
   bytes_written_fputc++;
@@ -56,7 +57,7 @@ int lzss_fgetc()
     return LZSS_EOF;
 
   /* read byte callback */
-  uint8_t const c = read_byte_fptr();
+  uint8_t const c = esp_ota_obj_ptr->read_byte_from_network();
   bytes_read_fgetc++;
 
   return c;
@@ -157,10 +158,9 @@ void lzss_decode(void)
    PUBLIC FUNCTIONS
  **************************************************************************************/
 
-int lzss_download(ArduinoEsp32OtaReadByteFuncPointer read_byte, ArduinoEsp32OtaWriteByteFuncPointer write_byte, size_t const lzss_file_size)
+int lzss_download(Arduino_ESP32_OTA * instance, size_t const lzss_file_size)
 {
-  read_byte_fptr = read_byte;
-  write_byte_fptr = write_byte;
+  esp_ota_obj_ptr = instance;
   LZSS_FILE_SIZE = lzss_file_size;
   bytes_written_fputc = 0;
   bytes_read_fgetc = 0;

@@ -26,26 +26,6 @@
 #include "decompress/utility.h"
 #include "esp_ota_ops.h"
 
-/* Used to bind local module function to actual class instance */
-static Arduino_ESP32_OTA * _esp_ota_obj_ptr = 0;
-
-/******************************************************************************
-   LOCAL MODULE FUNCTIONS
- ******************************************************************************/
-
-static uint8_t read_byte() {
-  if(_esp_ota_obj_ptr) {
-    return _esp_ota_obj_ptr->read_byte_from_network();
-  }
-  return -1;
-}
-
-static void write_byte(uint8_t data) {
-  if(_esp_ota_obj_ptr) {
-    _esp_ota_obj_ptr->write_byte_to_flash(data);
-  }
-}
-
 /******************************************************************************
    CTOR/DTOR
  ******************************************************************************/
@@ -67,7 +47,6 @@ Arduino_ESP32_OTA::Arduino_ESP32_OTA()
 
 Arduino_ESP32_OTA::Error Arduino_ESP32_OTA::begin()
 {
-  _esp_ota_obj_ptr = this;
 
   /* ... initialize CRC ... */
   _crc32 = 0xFFFFFFFF;
@@ -273,7 +252,7 @@ int Arduino_ESP32_OTA::download(const char * ota_url)
   _crc32 = crc_update(_crc32, &_ota_header.header.magic_number, 12);
 
   /* Download and decode OTA file */
-  _ota_size = lzss_download(read_byte, write_byte, content_length_val - sizeof(_ota_header));
+  _ota_size = lzss_download(this, content_length_val - sizeof(_ota_header));
 
   if(_ota_size <= content_length_val - sizeof(_ota_header))
   {
