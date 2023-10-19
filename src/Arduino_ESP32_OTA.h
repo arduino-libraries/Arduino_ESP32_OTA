@@ -82,8 +82,15 @@ public:
   void reset();
   static bool isCapable();
 
-private:
+protected:
 
+  void otaInit();
+  void crc32Init();
+  void crc32Update(const uint8_t data);
+  void crc32Finalize();
+  bool crc32Verify();
+
+private:
   Client * _client;
   OtaHeader _ota_header;
   size_t _ota_size;
