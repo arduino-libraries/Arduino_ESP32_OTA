@@ -78,7 +78,7 @@ public:
   void setCACertBundle(const uint8_t * bundle);
   int download(const char * ota_url);
   uint8_t read_byte_from_network();
-  void write_byte_to_flash(uint8_t data);
+  virtual void write_byte_to_flash(uint8_t data);
   Arduino_ESP32_OTA::Error update();
   void reset();
   static bool isCapable();
