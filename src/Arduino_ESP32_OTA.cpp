@@ -136,13 +136,13 @@ int Arduino_ESP32_OTA::download(const char * ota_url)
     port = 443;
   } else {
     DEBUG_ERROR("%s: Failed to parse OTA URL %s", __FUNCTION__, ota_url);
-    return static_cast<int>(Error::UrlParseError);
+    return static_cast<int>(Error::UrlParse);
   }
 
   if (!_client->connect(url.host_.c_str(), port))
   {
     DEBUG_ERROR("%s: Connection failure with OTA storage server %s", __FUNCTION__, url.host_.c_str());
-    return static_cast<int>(Error::ServerConnectError);
+    return static_cast<int>(Error::ServerConnect);
   }
 
   _client->println(String("GET ") + url.path_.c_str() + " HTTP/1.1");
@@ -172,7 +172,7 @@ int Arduino_ESP32_OTA::download(const char * ota_url)
   if (!is_header_complete)
   {
     DEBUG_ERROR("%s: Error receiving HTTP header %s", __FUNCTION__, is_http_header_timeout ? "(timeout)":"");
-    return static_cast<int>(Error::HttpHeaderError);
+    return static_cast<int>(Error::HttpHeader);
   }
 
   /* Check HTTP response status code */
