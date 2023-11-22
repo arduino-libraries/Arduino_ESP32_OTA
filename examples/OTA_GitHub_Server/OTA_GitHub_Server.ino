@@ -11,8 +11,8 @@
  *      B) ./bin2ota.py ESP SKETCH.lzss SKETCH.ota
  *   4) Upload the OTA file to a network reachable location, e.g. LOLIN_32_Blink.ino.ota
  *      has been uploaded to: http://downloads.arduino.cc/ota/LOLIN_32_Blink.ino.ota 
- *   5) Verify if a custom ca_cert is needed by default Amazon root CA are used
- *      https://www.amazontrust.com/repository/
+ *   5) Verify if a custom ca_cert is needed by default DigiCert root CA are used
+ *      https://www.digicert.com/kb/digicert-root-certificates.htm
  *   6) Perform an OTA update via steps outlined below.
  */
 
