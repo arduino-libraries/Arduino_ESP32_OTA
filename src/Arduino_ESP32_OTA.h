@@ -43,13 +43,6 @@ static uint32_t const ARDUINO_ESP32_OTA_BINARY_HEADER_RECEIVE_TIMEOUT_ms = 10000
 static uint32_t const ARDUINO_ESP32_OTA_BINARY_BYTE_RECEIVE_TIMEOUT_ms = 2000;
 
 /******************************************************************************
- * TYPEDEF
- ******************************************************************************/
-
-typedef uint8_t(*ArduinoEsp32OtaReadByteFuncPointer)(void);
-typedef void(*ArduinoEsp32OtaWriteByteFuncPointer)(uint8_t);
-
-/******************************************************************************
  * CLASS DECLARATION
  ******************************************************************************/
 
@@ -79,24 +72,34 @@ public:
            Arduino_ESP32_OTA();
   virtual ~Arduino_ESP32_OTA() { }
 
-  Arduino_ESP32_OTA::Error begin();
-  void setCACert (const char *rootCA);
+  Arduino_ESP32_OTA::Error begin(uint32_t magic = ARDUINO_ESP32_OTA_MAGIC);
+  void setMagic(uint32_t magic);
+  void setCACert(const char *rootCA);
   void setCACertBundle(const uint8_t * bundle);
   int download(const char * ota_url);
   uint8_t read_byte_from_network();
-  void write_byte_to_flash(uint8_t data);
+  virtual void write_byte_to_flash(uint8_t data);
   Arduino_ESP32_OTA::Error update();
   void reset();
   static bool isCapable();
 
-private:
+protected:
 
+  void otaInit();
+  void crc32Init();
+  void crc32Update(const uint8_t data);
+  void crc32Finalize();
+  bool crc32Verify();
+
+private:
   Client * _client;
   OtaHeader _ota_header;
   size_t _ota_size;
   uint32_t _crc32;
   const char * _ca_cert;
   const uint8_t * _ca_cert_bundle;
+  uint32_t _magic;
+
 };
 
 #endif /* ARDUINO_ESP32_OTA_H_ */

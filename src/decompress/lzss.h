@@ -11,6 +11,6 @@
    FUNCTION DEFINITION
  **************************************************************************************/
 
-int lzss_download(ArduinoEsp32OtaReadByteFuncPointer read_byte, ArduinoEsp32OtaWriteByteFuncPointer write_byte, size_t const lzss_file_size);
+int lzss_download(Arduino_ESP32_OTA * instance, size_t const lzss_file_size);
 
 #endif /* SSU_LZSS_H_ */

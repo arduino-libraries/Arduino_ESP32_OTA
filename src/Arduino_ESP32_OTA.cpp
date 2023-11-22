@@ -26,26 +26,6 @@
 #include "decompress/utility.h"
 #include "esp_ota_ops.h"
 
-/* Used to bind local module function to actual class instance */
-static Arduino_ESP32_OTA * _esp_ota_obj_ptr = 0;
-
-/******************************************************************************
-   LOCAL MODULE FUNCTIONS
- ******************************************************************************/
-
-static uint8_t read_byte() {
-  if(_esp_ota_obj_ptr) {
-    return _esp_ota_obj_ptr->read_byte_from_network();
-  }
-  return -1;
-}
-
-static void write_byte(uint8_t data) {
-  if(_esp_ota_obj_ptr) {
-    _esp_ota_obj_ptr->write_byte_to_flash(data);
-  }
-}
-
 /******************************************************************************
    CTOR/DTOR
  ******************************************************************************/
@@ -57,6 +37,7 @@ Arduino_ESP32_OTA::Arduino_ESP32_OTA()
 ,_crc32(0)
 ,_ca_cert{amazon_root_ca}
 ,_ca_cert_bundle{nullptr}
+,_magic(0)
 {
 
 }
@@ -65,21 +46,21 @@ Arduino_ESP32_OTA::Arduino_ESP32_OTA()
    PUBLIC MEMBER FUNCTIONS
  ******************************************************************************/
 
-Arduino_ESP32_OTA::Error Arduino_ESP32_OTA::begin()
+Arduino_ESP32_OTA::Error Arduino_ESP32_OTA::begin(uint32_t magic)
 {
-  _esp_ota_obj_ptr = this;
+  /* initialize private variables */
+  otaInit();
 
   /* ... initialize CRC ... */
-  _crc32 = 0xFFFFFFFF;
+  crc32Init();
+
+  /* ... configure board Magic number */
+  setMagic(magic);
 
   if(!isCapable()) {
     DEBUG_ERROR("%s: board is not capable to perform OTA", __FUNCTION__);
     return Error::NoOtaStorage;
   }
-
-  /* initialize private variables */
-  _ota_size = 0;
-  _ota_header = {0};
 
   if(Update.isRunning()) {
     Update.abort();
@@ -107,6 +88,11 @@ void Arduino_ESP32_OTA::setCACertBundle (const uint8_t * bundle)
   }
 }
 
+void Arduino_ESP32_OTA::setMagic(uint32_t magic)
+{
+  _magic = magic;
+}
+
 uint8_t Arduino_ESP32_OTA::read_byte_from_network()
 {
   bool is_http_data_timeout = false;
@@ -119,7 +105,7 @@ uint8_t Arduino_ESP32_OTA::read_byte_from_network()
     }
     if (_client->available()) {
       const uint8_t data = _client->read();
-      _crc32 = crc_update(_crc32, &data, 1);
+      crc32Update(data);
       return data;
     }
   }
@@ -262,7 +248,7 @@ int Arduino_ESP32_OTA::download(const char * ota_url)
   }
 
   /* ... and OTA magic number */
-  if (_ota_header.header.magic_number != ARDUINO_ESP32_OTA_MAGIC)
+  if (_ota_header.header.magic_number != _magic)
   {
     delete _client;
     _client = nullptr;
@@ -273,7 +259,7 @@ int Arduino_ESP32_OTA::download(const char * ota_url)
   _crc32 = crc_update(_crc32, &_ota_header.header.magic_number, 12);
 
   /* Download and decode OTA file */
-  _ota_size = lzss_download(read_byte, write_byte, content_length_val - sizeof(_ota_header));
+  _ota_size = lzss_download(this, content_length_val - sizeof(_ota_header));
 
   if(_ota_size <= content_length_val - sizeof(_ota_header))
   {
@@ -289,10 +275,10 @@ int Arduino_ESP32_OTA::download(const char * ota_url)
 
 Arduino_ESP32_OTA::Error Arduino_ESP32_OTA::update()
 {
-  /* ... then finalise ... */
-  _crc32 ^= 0xFFFFFFFF;
+  /* ... then finalize ... */
+  crc32Finalize();
 
-  if(_crc32 != _ota_header.header.crc32) {
+  if(!crc32Verify()) {
     DEBUG_ERROR("%s: CRC32 mismatch", __FUNCTION__);
     return Error::OtaHeaderCrc;
   }
@@ -315,4 +301,34 @@ bool Arduino_ESP32_OTA::isCapable()
   const esp_partition_t * ota_0  = esp_partition_find_first(ESP_PARTITION_TYPE_APP, ESP_PARTITION_SUBTYPE_APP_OTA_0, NULL);
   const esp_partition_t * ota_1  = esp_partition_find_first(ESP_PARTITION_TYPE_APP, ESP_PARTITION_SUBTYPE_APP_OTA_1, NULL);
   return ((ota_0 != nullptr) && (ota_1 != nullptr));
+}
+
+/******************************************************************************
+   PROTECTED MEMBER FUNCTIONS
+ ******************************************************************************/
+
+void Arduino_ESP32_OTA::otaInit()
+{
+  _ota_size = 0;
+  _ota_header = {0};
+}
+
+void Arduino_ESP32_OTA::crc32Init()
+{
+  _crc32 = 0xFFFFFFFF;
+}
+
+void Arduino_ESP32_OTA::crc32Update(const uint8_t data)
+{
+  _crc32 = crc_update(_crc32, &data, 1);
+}
+
+void Arduino_ESP32_OTA::crc32Finalize()
+{
+  _crc32 ^= 0xFFFFFFFF;
+}
+
+bool Arduino_ESP32_OTA::crc32Verify()
+{
+  return (_crc32 == _ota_header.header.crc32);
 }
