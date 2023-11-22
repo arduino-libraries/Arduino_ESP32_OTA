@@ -63,17 +63,17 @@ public:
     None                 =  0,
     NoOtaStorage         = -2,
     OtaStorageInit       = -3,
-    OtaStorageEnd        = -4,
-    UrlParseError        = -5,
-    ServerConnectError   = -6,
-    HttpHeaderError      = -7,
+    OtaHeaderLength      = -5,
+    OtaHeaderCrc         = -6,
+    OtaHeaterMagicNumber = -7,
     ParseHttpHeader      = -8,
-    OtaHeaderLength      = -9,
-    OtaHeaderCrc         = -10,
-    OtaHeaterMagicNumber = -11,
+    UrlParse             = -9,
+    ServerConnect        = -10,
+    HttpHeader           = -11,
     OtaDownload          = -12,
     OtaHeaderTimeout     = -13,
-    HttpResponse         = -14
+    HttpResponse         = -14,
+    OtaStorageEnd        = -15,
   };
 
            Arduino_ESP32_OTA();
