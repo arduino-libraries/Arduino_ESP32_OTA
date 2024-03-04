@@ -37,8 +37,10 @@ jobs:
         board:
           - fqbn: "esp32:esp32:esp32"
             type: esp32
+            artifact-name-suffix: esp32-esp32-esp32
           - fqbn: "arduino:esp32:nano_nora"
             type: arduino_esp32
+            artifact-name-suffix: arduino-esp32-arduino_esp32
 
         include:
           - board:
@@ -52,7 +54,6 @@ jobs:
               - examples/OTA_Arduino_Server
               - examples/OTA_GitHub_Server
               - examples/LOLIN_32_Blink
-            artifact-name-suffix: esp32-esp32-esp32
           - board:
               type: arduino_esp32
             platforms: |
@@ -63,7 +64,6 @@ jobs:
               - examples/OTA_Arduino_Server
               - examples/OTA_GitHub_Server
               - examples/NANO_ESP32_Blink
-            artifact-name-suffix: arduino-esp32-arduino_esp32
 
     steps:
       - name: Checkout
