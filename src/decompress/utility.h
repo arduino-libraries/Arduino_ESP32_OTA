@@ -4,21 +4,6 @@
 /**************************************************************************************
    INCLUDE
  **************************************************************************************/
-#include <string>
-#include <algorithm>
-#include <cctype>
-#include <functional>
-#include <iostream>
-
-struct URI {
-  public:
-    URI(const std::string& url_s) {
-      this->parse(url_s);
-    }
-    std::string protocol_, host_, path_, query_;
-  private:
-    void parse(const std::string& url_s);
-};
 
 union HeaderVersion
 {
