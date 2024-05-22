@@ -21,7 +21,6 @@
 
 #include <Update.h>
 #include "Arduino_ESP32_OTA.h"
-#include "tls/amazon_root_ca.h"
 #include "decompress/lzss.h"
 #include "decompress/utility.h"
 #include "esp_ota_ops.h"
@@ -35,7 +34,7 @@ Arduino_ESP32_OTA::Arduino_ESP32_OTA()
 ,_ota_header{0}
 ,_ota_size(0)
 ,_crc32(0)
-,_ca_cert{amazon_root_ca}
+,_ca_cert{nullptr}
 ,_ca_cert_bundle{nullptr}
 ,_magic(0)
 {
