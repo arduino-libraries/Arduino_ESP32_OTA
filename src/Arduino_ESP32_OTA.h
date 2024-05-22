@@ -63,7 +63,7 @@ public:
     ParseHttpHeader      = -8,
     OtaHeaderLength      = -9,
     OtaHeaderCrc         = -10,
-    OtaHeaterMagicNumber = -11,
+    OtaHeaderMagicNumber = -11,
     OtaDownload          = -12,
     OtaHeaderTimeout     = -13,
     HttpResponse         = -14
