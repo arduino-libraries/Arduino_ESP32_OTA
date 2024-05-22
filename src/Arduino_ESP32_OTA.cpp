@@ -312,8 +312,10 @@ void Arduino_ESP32_OTA::clean()
   }
 }
 
-Arduino_ESP32_OTA::Error Arduino_ESP32_OTA::update()
+Arduino_ESP32_OTA::Error Arduino_ESP32_OTA::verify()
 {
+  assert(_context != nullptr);
+
   /* ... then finalize ... */
   _context->calculatedCrc32 ^= 0xFFFFFFFF;
 
@@ -323,14 +325,24 @@ Arduino_ESP32_OTA::Error Arduino_ESP32_OTA::update()
     return Error::OtaHeaderCrc;
   }
 
+  clean();
+
+  return Error::None;
+}
+
+Arduino_ESP32_OTA::Error Arduino_ESP32_OTA::update()
+{
+  Arduino_ESP32_OTA::Error res = Error::None;
+  if(_context != nullptr && (res = verify()) != Error::None) {
+    return res;
+  }
+
   if (!Update.end(true)) {
     DEBUG_ERROR("%s: Failure to apply OTA update", __FUNCTION__);
     return Error::OtaStorageEnd;
   }
 
-  clean();
-
-  return Error::None;
+  return res;
 }
 
 void Arduino_ESP32_OTA::reset()

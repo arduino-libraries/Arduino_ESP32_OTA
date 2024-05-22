@@ -114,6 +114,7 @@ public:
   size_t downloadSize();
 
   virtual void write_byte_to_flash(uint8_t data);
+  Arduino_ESP32_OTA::Error verify();
   Arduino_ESP32_OTA::Error update();
   void reset();
   static bool isCapable();
