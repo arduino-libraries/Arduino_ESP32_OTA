@@ -48,6 +48,7 @@ jobs:
                 source-url: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
             libraries: |
               - name: Arduino_DebugUtils
+              - name: ArduinoHttpClient
             sketch-paths: |
               - examples/OTA_Arduino_Server
               - examples/OTA_GitHub_Server
@@ -58,6 +59,7 @@ jobs:
               - name: arduino:esp32
             libraries: |
               - name: Arduino_DebugUtils
+              - name: ArduinoHttpClient
             sketch-paths: |
               - examples/OTA_Arduino_Server
               - examples/OTA_GitHub_Server
