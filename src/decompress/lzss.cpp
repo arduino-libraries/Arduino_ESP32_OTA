@@ -1,169 +1,163 @@
-/* Original code: https://oku.edu.mie-u.ac.jp/~okumura/compression/lzss.c */
+/*
+  This file is part of the ArduinoIoTCloud library.
+
+  Copyright (c) 2024 Arduino SA
+
+  This Source Code Form is subject to the terms of the Mozilla Public
+  License, v. 2.0. If a copy of the MPL was not distributed with this
+  file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+  This implementation took inspiration from https://okumuralab.org/~okumura/compression/lzss.c source code
+*/
 
 /**************************************************************************************
    INCLUDE
  **************************************************************************************/
-
 #include "lzss.h"
 
-/**************************************************************************************
-   DEFINE
- **************************************************************************************/
-
-#define EI 11             /* typically 10..13 */
-#define EJ  4             /* typically 4..5 */
-#define P   1             /* If match length <= P then output one character */
-#define N (1 << EI)       /* buffer size */
-#define L ((1 << EJ) + 1) /* lookahead buffer size */
-
-#define LZSS_EOF (-1)
+#include <stdlib.h>
 
 /**************************************************************************************
-   GLOBAL VARIABLES
+   LZSS DECODER CLASS IMPLEMENTATION
  **************************************************************************************/
 
-/* Used to bind local module function to actual class instance */
-static Arduino_ESP32_OTA * esp_ota_obj_ptr = 0;
-
-static size_t LZSS_FILE_SIZE = 0;
-
-int bit_buffer = 0, bit_mask = 128;
-unsigned char buffer[N * 2];
-
-static size_t bytes_written_fputc = 0;
-static size_t bytes_read_fgetc = 0;
-
-/**************************************************************************************
-   PRIVATE FUNCTIONS
- **************************************************************************************/
-
-void lzss_fputc(int const c)
-{
-  esp_ota_obj_ptr->write_byte_to_flash((uint8_t)c);
-  
-  /* write byte callback */
-  bytes_written_fputc++;
-}
-
-int lzss_fgetc()
-{
-  /* lzss_file_size is set within SSUBoot:main 
-   * and contains the size of the LZSS file. Once
-   * all those bytes have been read its time to return
-   * LZSS_EOF in order to signal that the end of
-   * the file has been reached.
-   */
-  if (bytes_read_fgetc == LZSS_FILE_SIZE)
-    return LZSS_EOF;
-
-  /* read byte callback */
-  uint8_t const c = esp_ota_obj_ptr->read_byte_from_network();
-  bytes_read_fgetc++;
-
-  return c;
-}
-
-/**************************************************************************************
-   LZSS FUNCTIONS
- **************************************************************************************/
-
-void putbit1(void)
-{
-  bit_buffer |= bit_mask;
-  if ((bit_mask >>= 1) == 0) {
-    lzss_fputc(bit_buffer);
-    bit_buffer = 0;  bit_mask = 128;
-  }
-}
-
-void putbit0(void)
-{
-  if ((bit_mask >>= 1) == 0) {
-    lzss_fputc(bit_buffer);
-    bit_buffer = 0;  bit_mask = 128;
-  }
-}
-
-void output1(int c)
-{
-  int mask;
-    
-  putbit1();
-  mask = 256;
-  while (mask >>= 1) {
-    if (c & mask) putbit1();
-    else putbit0();
-  }
-}
-
-void output2(int x, int y)
-{
-  int mask;
-    
-  putbit0();
-  mask = N;
-  while (mask >>= 1) {
-    if (x & mask) putbit1();
-    else putbit0();
-  }
-  mask = (1 << EJ);
-  while (mask >>= 1) {
-    if (y & mask) putbit1();
-    else putbit0();
-  }
-}
-
-int getbit(int n) /* get n bits */
-{
-  int i, x;
-  static int buf, mask = 0;
-    
-  x = 0;
-  for (i = 0; i < n; i++) {
-    if (mask == 0) {
-      if ((buf = lzss_fgetc()) == LZSS_EOF) return LZSS_EOF;
-      mask = 128;
+// get the number of bits the algorithm will try to get given the state
+uint8_t LZSSDecoder::bits_required(LZSSDecoder::FSM_STATES s) {
+    switch(s) {
+    case FSM_0:
+        return 1;
+    case FSM_1:
+        return 8;
+    case FSM_2:
+        return EI;
+    case FSM_3:
+        return EJ;
+    default:
+        return 0;
     }
-    x <<= 1;
-    if (buf & mask) x++;
-    mask >>= 1;
-  }
-  return x;
 }
 
-void lzss_decode(void)
-{
-  int i, j, k, r, c;
-    
-  for (i = 0; i < N - L; i++) buffer[i] = ' ';
-  r = N - L;
-  while ((c = getbit(1)) != LZSS_EOF) {
-    if (c) {
-      if ((c = getbit(8)) == LZSS_EOF) break;
-      lzss_fputc(c);
-      buffer[r++] = c;  r &= (N - 1);
+LZSSDecoder::LZSSDecoder(std::function<int()> getc_cbk, std::function<void(const uint8_t)> putc_cbk)
+: available(0), state(FSM_0), put_char_cbk(putc_cbk), get_char_cbk(getc_cbk) {
+    for (int i = 0; i < N - F; i++) buffer[i] = ' ';
+    r = N - F;
+}
+
+
+LZSSDecoder::LZSSDecoder(std::function<void(const uint8_t)> putc_cbk)
+: available(0), state(FSM_0), put_char_cbk(putc_cbk), get_char_cbk(nullptr) {
+    for (int i = 0; i < N - F; i++) buffer[i] = ' ';
+    r = N - F;
+}
+
+LZSSDecoder::status LZSSDecoder::handle_state() {
+    LZSSDecoder::status res = IN_PROGRESS;
+
+    int c = getbit(bits_required(this->state));
+
+    if(c == LZSS_BUFFER_EMPTY) {
+        res = NOT_COMPLETED;
+    } else if (c == LZSS_EOF) {
+        res = DONE;
+        this->state = FSM_EOF;
     } else {
-      if ((i = getbit(EI)) == LZSS_EOF) break;
-      if ((j = getbit(EJ)) == LZSS_EOF) break;
-      for (k = 0; k <= j + 1; k++) {
-        c = buffer[(i + k) & (N - 1)];
-        lzss_fputc(c);
-        buffer[r++] = c;  r &= (N - 1);
-      }
+        switch(this->state) {
+            case FSM_0:
+                if(c) {
+                    this->state = FSM_1;
+                } else {
+                    this->state = FSM_2;
+                }
+                break;
+            case FSM_1:
+                putc(c);
+                buffer[r++] = c;
+                r &= (N - 1); // equivalent to r = r % N when N is a power of 2
+
+                this->state = FSM_0;
+                break;
+            case FSM_2:
+                this->i = c;
+                this->state = FSM_3;
+                break;
+            case FSM_3: {
+                int j = c;
+
+                // This is where the actual decompression takes place: we look into the local buffer for reuse
+                // of byte chunks. This can be improved by means of memcpy and by changing the putc function
+                // into a put_buf function in order to avoid buffering on the other end.
+                // TODO improve this section of code
+                for (int k = 0; k <= j + 1; k++) {
+                    c = buffer[(this->i + k) & (N - 1)]; // equivalent to buffer[(i+k) % N] when N is a power of 2
+                    putc(c);
+                    buffer[r++] = c;
+                    r &= (N - 1); // equivalent to r = r % N
+                }
+                this->state = FSM_0;
+
+                break;
+            }
+            case FSM_EOF:
+                break;
+        }
     }
-  }
+
+    return res;
 }
 
-/**************************************************************************************
-   PUBLIC FUNCTIONS
- **************************************************************************************/
+LZSSDecoder::status LZSSDecoder::decompress(uint8_t* const buffer, uint32_t size) {
+    if(!get_char_cbk) {
+        this->in_buffer = buffer;
+        this->available += size;
+    }
 
-int lzss_download(Arduino_ESP32_OTA * instance, size_t const lzss_file_size)
-{
-  esp_ota_obj_ptr = instance;
-  LZSS_FILE_SIZE = lzss_file_size;
-  bytes_written_fputc = 0;
-  bytes_read_fgetc = 0;
-  lzss_decode();
-  return bytes_written_fputc;
+    status res = IN_PROGRESS;
+
+    while((res = handle_state()) == IN_PROGRESS);
+
+    this->in_buffer = nullptr;
+
+    return res;
+}
+
+int LZSSDecoder::getbit(uint8_t n) { // get n bits from buffer
+    int x=0, c;
+
+    // if the local bit buffer doesn't have enough bit get them
+    while(buf_size < n) {
+        switch(c=getc()) {
+        case LZSS_EOF:
+        case LZSS_BUFFER_EMPTY:
+            return c;
+        }
+        buf <<= 8;
+
+        buf |= (uint8_t)c;
+        buf_size += sizeof(uint8_t)*8;
+    }
+
+    // the result is the content of the buffer starting from msb to n successive bits
+    x = buf >> (buf_size-n);
+
+    // remove from the buffer the read bits with a mask
+    buf &= (1<<(buf_size-n))-1;
+
+    buf_size-=n;
+
+    return x;
+}
+
+int LZSSDecoder::getc() {
+    int c;
+
+    if(get_char_cbk) {
+        c = get_char_cbk();
+    } else if(in_buffer == nullptr || available == 0) {
+        c = LZSS_BUFFER_EMPTY;
+    } else {
+        c = *in_buffer;
+        in_buffer++;
+        available--;
+    }
+    return c;
 }

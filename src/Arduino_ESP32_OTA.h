@@ -25,6 +25,10 @@
 #include <Arduino_DebugUtils.h>
 #include <WiFiClientSecure.h>
 #include "decompress/utility.h"
+#include "decompress/lzss.h"
+#include <ArduinoHttpClient.h>
+#include <URLParser.h>
+#include <stdint.h>
 
 /******************************************************************************
    DEFINES
@@ -63,43 +67,93 @@ public:
     ParseHttpHeader      = -8,
     OtaHeaderLength      = -9,
     OtaHeaderCrc         = -10,
-    OtaHeaterMagicNumber = -11,
+    OtaHeaderMagicNumber = -11,
     OtaDownload          = -12,
     OtaHeaderTimeout     = -13,
     HttpResponse         = -14
   };
 
+  enum OTADownloadState: uint8_t {
+    OtaDownloadHeader,
+    OtaDownloadFile,
+    OtaDownloadCompleted,
+    OtaDownloadMagicNumberMismatch,
+    OtaDownloadError
+  };
+
            Arduino_ESP32_OTA();
-  virtual ~Arduino_ESP32_OTA() { }
+  virtual ~Arduino_ESP32_OTA();
 
   Arduino_ESP32_OTA::Error begin(uint32_t magic = ARDUINO_ESP32_OTA_MAGIC);
   void setMagic(uint32_t magic);
   void setCACert(const char *rootCA);
   void setCACertBundle(const uint8_t * bundle);
+
+  // blocking version for the download
+  // returns the size of the downloaded binary
   int download(const char * ota_url);
-  uint8_t read_byte_from_network();
+
+  // start a download in a non blocking fashion
+  // call downloadPoll, until it returns OtaDownloadCompleted
+  // returns the value in content-length http header
+  int startDownload(const char * ota_url);
+
+  // This function is used to make the download progress.
+  // it returns 0, if the download is in progress
+  // it returns 1, if the download is completed
+  // it returns <0 if an error occurred, following Error enum values
+  virtual int downloadPoll();
+
+  // this function is used to get the progress of the download
+  // it returns a positive value when the download is progressing correctly
+  // it returns a negative value on error following Error enum values
+  int downloadProgress();
+
+  // this function is used to get the size of the download
+  // 0 if no download is in progress
+  size_t downloadSize();
+
   virtual void write_byte_to_flash(uint8_t data);
+  Arduino_ESP32_OTA::Error verify();
   Arduino_ESP32_OTA::Error update();
   void reset();
   static bool isCapable();
 
 protected:
+  struct Context {
+    Context(
+      const char* url,
+      std::function<void(uint8_t)> putc);
 
-  void otaInit();
-  void crc32Init();
-  void crc32Update(const uint8_t data);
-  void crc32Finalize();
-  bool crc32Verify();
+    ~Context();
+
+    char*             url;
+    ParsedUrl         parsed_url;
+    OtaHeader         header;
+    OTADownloadState  downloadState;
+    uint32_t          calculatedCrc32;
+    uint32_t          headerCopiedBytes;
+    uint32_t          downloadedSize;
+    uint32_t          writtenBytes;
+
+    // If an error occurred during download it is reported in this field
+    Error             error;
+
+    // LZSS decoder
+    LZSSDecoder       decoder;
+
+    const size_t buf_len = 64;
+    uint8_t buffer[64];
+  } *_context;
 
 private:
   Client * _client;
-  OtaHeader _ota_header;
-  size_t _ota_size;
-  uint32_t _crc32;
+  HttpClient* _http_client;
   const char * _ca_cert;
   const uint8_t * _ca_cert_bundle;
   uint32_t _magic;
 
+  void clean();
 };
 
 #endif /* ARDUINO_ESP32_OTA_H_ */
