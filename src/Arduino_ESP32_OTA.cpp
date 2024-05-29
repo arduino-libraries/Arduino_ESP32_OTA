@@ -291,7 +291,7 @@ int Arduino_ESP32_OTA::download(const char * ota_url)
   }
 
   int res = 0;
-  while((res = downloadPoll()) <= 0);
+  while((res = downloadPoll()) == 0);
 
   return res == 1? _context->writtenBytes : res;
 }
