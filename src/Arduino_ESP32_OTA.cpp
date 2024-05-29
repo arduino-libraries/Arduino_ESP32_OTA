@@ -102,6 +102,7 @@ int Arduino_ESP32_OTA::startDownload(const char * ota_url)
   Error err = Error::None;
   int statusCode;
   int res;
+  String req;
 
   _context = new Context(ota_url, [this](uint8_t data){
     _context->writtenBytes++;
@@ -126,7 +127,8 @@ int Arduino_ESP32_OTA::startDownload(const char * ota_url)
 
   _http_client = new HttpClient(*_client, _context->parsed_url.host(), _context->parsed_url.port());
 
-  res= _http_client->get(_context->parsed_url.path());
+  req = String(_context->parsed_url.path()) + String(_context->parsed_url.query());
+  res = _http_client->get(_context->parsed_url.path());
 
   if(res == HTTP_ERROR_CONNECTION_FAILED) {
     DEBUG_VERBOSE("OTA ERROR: http client error connecting to server \"%s:%d\"",
