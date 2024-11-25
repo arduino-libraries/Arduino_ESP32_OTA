@@ -24,6 +24,7 @@
 
 #include <Arduino_DebugUtils.h>
 #include <WiFiClientSecure.h>
+#include <WiFi.h>
 #include "decompress/utility.h"
 #include "decompress/lzss.h"
 #include <ArduinoHttpClient.h>
@@ -87,7 +88,8 @@ public:
   Arduino_ESP32_OTA::Error begin(uint32_t magic = ARDUINO_ESP32_OTA_MAGIC);
   void setMagic(uint32_t magic);
   void setCACert(const char *rootCA);
-  void setCACertBundle(const uint8_t * bundle);
+  void setCACertBundle(const uint8_t * bundle) __attribute__((deprecated));
+  void setCACertBundle (const uint8_t * bundle, size_t size);
 
   // blocking version for the download
   // returns the size of the downloaded binary
@@ -151,6 +153,7 @@ private:
   HttpClient* _http_client;
   const char * _ca_cert;
   const uint8_t * _ca_cert_bundle;
+  size_t _ca_cert_bundle_size;
   uint32_t _magic;
 
   void clean();

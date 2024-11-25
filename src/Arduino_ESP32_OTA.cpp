@@ -34,6 +34,7 @@ Arduino_ESP32_OTA::Arduino_ESP32_OTA()
 , _http_client(nullptr)
 ,_ca_cert{amazon_root_ca}
 ,_ca_cert_bundle{nullptr}
+,_ca_cert_bundle_size(0)
 ,_magic(0)
 {
 
@@ -83,6 +84,14 @@ void Arduino_ESP32_OTA::setCACertBundle (const uint8_t * bundle)
   }
 }
 
+void Arduino_ESP32_OTA::setCACertBundle (const uint8_t * bundle, size_t size)
+{
+  if(bundle != nullptr && size != 0) {
+    _ca_cert_bundle = bundle;
+    _ca_cert_bundle_size = size;
+  }
+}
+
 void Arduino_ESP32_OTA::setMagic(uint32_t magic)
 {
   _magic = magic;
@@ -114,9 +123,17 @@ int Arduino_ESP32_OTA::startDownload(const char * ota_url)
     _client = new WiFiClientSecure();
     if (_ca_cert != nullptr) {
       static_cast<WiFiClientSecure*>(_client)->setCACert(_ca_cert);
-    } else if (_ca_cert_bundle != nullptr) {
+    }
+#if (ESP_ARDUINO_VERSION < ESP_ARDUINO_VERSION_VAL(3, 0, 4))
+    else if (_ca_cert_bundle != nullptr) {
       static_cast<WiFiClientSecure*>(_client)->setCACertBundle(_ca_cert_bundle);
-    } else {
+    }
+#else
+    else if (_ca_cert_bundle != nullptr && _ca_cert_bundle_size != 0) {
+      static_cast<WiFiClientSecure*>(_client)->setCACertBundle(_ca_cert_bundle, _ca_cert_bundle_size);
+    }
+#endif
+    else {
       DEBUG_VERBOSE("%s: CA not configured for download client");
     }
   } else {
