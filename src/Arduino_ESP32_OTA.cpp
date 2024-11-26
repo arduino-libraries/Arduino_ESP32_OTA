@@ -386,6 +386,7 @@ Arduino_ESP32_OTA::Context::Context(
     , calculatedCrc32(0xFFFFFFFF)
     , headerCopiedBytes(0)
     , downloadedSize(0)
+    , writtenBytes(0)
     , error(Error::None)
     , decoder(putc) {
       strcpy(this->url, url);
