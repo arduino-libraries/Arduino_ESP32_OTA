@@ -54,3 +54,9 @@ The library is based on the [Update](https://github.com/espressif/arduino-esp32/
     | `ESP32-­S2-­SOLO` | [ESP32-S2-DevKitC-1](https://docs.espressif.com/projects/esp-idf/en/latest/esp32s2/hw-reference/esp32s2/user-guide-s2-devkitc-1.html) |
     |  | NodeMCU-32-S2 |
     | `ESP32-C3`  | [LILYGO mini D1 PLUS](https://github.com/Xinyuan-LilyGO/LilyGo-T-OI-PLUS)|
+
+## :page_with_curl: License
+
+Arduino_ESP32_OTA is licensed under the GNU General Public License v3.0 license.
+
+You can be released from the requirements of the above license by purchasing a commercial license. Buying such a license is mandatory if you want to modify or otherwise use the software for commercial activities involving the Arduino software without disclosing the source code of your own applications. To purchase a commercial license, send an email to license@arduino.cc
